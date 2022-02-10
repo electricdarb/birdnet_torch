@@ -1,19 +1,26 @@
 from sys import prefix
+from dataset_info import NUM_CLASSES
 from ray import tune
 import torch 
 import torchvision 
 from torchvision import transforms
 import utils
-from dataset_info import NUM_CLASSES
 import timm
 from torch.utils.data import DataLoader
 
 FOLDER_NAME = 'mobilenetv3_hpsearch'
-EPOCHS = 1
-TRAIN_PATH = '/mnt/c/Users/14135/Desktop/birdnet/cub200data/CUB_200_2011/train'#'./../birdnet/cub200data/CUB_200_2011/train/' 
-TEST_PATH = '/mnt/c/Users/14135/Desktop/birdnet/cub200data/CUB_200_2011/test'#'./../birdnet/cub200data/CUB_200_2011/test/'
+NUM_CLASSES = 200
+
+EPOCHS = 12
+NUM_SAMPLES = 30
+
+TRAIN_PATH = '/mnt/c/Users/14135/Desktop/birdnet/cub200data/CUB_200_2011/train' #'./../birdnet/cub200data/CUB_200_2011/train/' 
+TEST_PATH = '/mnt/c/Users/14135/Desktop/birdnet/cub200data/CUB_200_2011/test' #'./../birdnet/cub200data/CUB_200_2011/test/'
 
 TEST_SIZE = 2024
+
+TRIAL_NAME = "init"
+
 
 def train_epoch(model, opt, train_loader):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -57,15 +64,12 @@ def test_epoch(model, data_loader):
     return correct / total
 
 def train_cub(config):
-    runname = utils.make_runname()
-    # data setup
-
     # base transforms 
     base_transforms = [
     transforms.Resize(224),
     transforms.CenterCrop(224),
     transforms.ToTensor(),
-    transforms.Normalize(mean=[0, 0, 0], std=[0.225, 0.225, 0.225] )
+    transforms.Normalize(mean=[0, 0, 0], std=[0.225, 0.225, 0.225])
     ]
 
     # train transforms 
@@ -97,28 +101,24 @@ def train_cub(config):
     for epoch in range(EPOCHS):
         train_epoch(model, opt, train_loader)
         acc = test_epoch(model, test_loader)
+
         tune.report(mean_accuracy=acc)
+
+    runname = utils.make_runname(prefix = f'{acc:.5f}')
 
     utils.save_model(runname, model, foldername = FOLDER_NAME)
 
-
 if __name__ == "__main__":
-
     search_space = {
         'lr': tune.loguniform(1e-6, .1),
         'momentum': tune.choice([.6, .9, .99]),
-        'l2': tune.loguniform(1e-6, 1e-3)
-    }
+        'l2': tune.loguniform(1e-6, 1e-3)}
 
     analysis = tune.run(
         train_cub,
-        num_samples = 1,
+        num_samples = NUM_SAMPLES,
         scheduler = tune.schedulers.ASHAScheduler(metric="mean_accuracy", mode="max"),
-        config = search_space)
+        config = search_space, 
+        verbose = 1)
 
-    
-
-
-    
-
-    
+    utils.save_analysis('analysisinit', analysis, foldername = FOLDER_NAME)

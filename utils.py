@@ -46,14 +46,14 @@ def load_model(runname, bucketname = 'bradfordgillbirddatabucket', foldername = 
 
     return torch.load(path)
 
-def log_history(runname, history, bucketname = 'bradfordgillbirddatabucket', foldername = 'historylogs'):
-    filename = f'{runname}.npy'
+def save_analysis(name, analysis, bucketname = 'bradfordgillbirddatabucket', foldername = 'analysislogs'):
+    filename = f'{name}.npy'
     if not os.path.exists(foldername):
         os.mkdir(foldername)
 
     path = os.path.join(foldername, filename)
 
-    np.save(path, history.history)
+    np.save(path, analysis, allow_pickle = True)
 
     session = boto3.Session(
             aws_access_key_id=KEY_ID,
@@ -62,8 +62,8 @@ def log_history(runname, history, bucketname = 'bradfordgillbirddatabucket', fol
     s3 = session.resource('s3')
     result = s3.Bucket(bucketname).upload_file(path, path)
 
-def get_history(runname,  bucketname = 'bradfordgillbirddatabucket', foldername = 'historylogs'):
-    filename = f'{runname}.npy'
+def load_analysis(name, bucketname = 'bradfordgillbirddatabucket', foldername = 'analysislogs'):
+    filename = f'{name}.npy'
     path = os.path.join(foldername, filename)
 
     if not os.path.exists(path):
@@ -87,9 +87,5 @@ def get_class_names():
             names.append(line[line.find('.') + 1:])
     return names
 
-def format_for_yolo():
-    pass
-            
-
 if __name__ == '__main__':
-    get_class_names()
+    pass
