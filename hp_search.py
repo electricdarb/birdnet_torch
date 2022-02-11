@@ -1,5 +1,4 @@
 from sys import prefix
-from dataset_info import NUM_CLASSES
 from ray import tune
 import torch 
 import torchvision 
