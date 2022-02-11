@@ -76,7 +76,6 @@ def train_cub(config):
     # train transforms 
     train_transforms = transforms.Compose([*base_transforms,
                         transforms.RandomRotation(degrees=(0, 20)),
-                        transforms.RandomAutocontrast(),
                         transforms.RandomHorizontalFlip(p=0.5),
                         ])
 
