@@ -119,6 +119,7 @@ if __name__ == "__main__":
         num_samples = NUM_SAMPLES,
         scheduler = tune.schedulers.ASHAScheduler(metric="mean_accuracy", mode="max"),
         config = search_space, 
-        verbose = 1)
+        verbose = 1,
+        resources_per_trial={"gpu": 1})
 
     utils.save_analysis('analysisinit', analysis, foldername = FOLDER_NAME)
