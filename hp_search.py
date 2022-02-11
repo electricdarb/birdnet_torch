@@ -12,7 +12,7 @@ FOLDER_NAME = 'mobilenetv3_hpsearch'
 NUM_CLASSES = 200
 
 EPOCHS = 12
-NUM_SAMPLES = 30
+NUM_SAMPLES = 32
 
 TRAIN_PATH = '/mnt/c/Users/14135/Desktop/birdnet/cub200data/CUB_200_2011/train' #'./../birdnet/cub200data/CUB_200_2011/train/' 
 TEST_PATH = '/mnt/c/Users/14135/Desktop/birdnet/cub200data/CUB_200_2011/test' #'./../birdnet/cub200data/CUB_200_2011/test/'
@@ -25,6 +25,7 @@ TRIAL_NAME = "init"
 def train_epoch(model, opt, train_loader):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.train()
+    model.to(device)
 
     loss_fn = torch.nn.CrossEntropyLoss()
     for batch_idx, (data, target) in enumerate(train_loader):
@@ -43,6 +44,7 @@ def train_epoch(model, opt, train_loader):
 def test_epoch(model, data_loader):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.eval()
+    model.to(device)
 
     correct = 0
     total = 0
