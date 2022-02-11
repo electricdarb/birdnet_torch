@@ -1,0 +1,10 @@
+# ignore all files/sub folders by defualt
+*
+*/
+
+# define what not to ignore
+!.gitignore
+!utils.py
+!hp_search.py
+!requirements.txt
+!neuralstick.ipynb
