@@ -13,8 +13,8 @@ NUM_CLASSES = 200
 EPOCHS = 12
 NUM_SAMPLES = 32
 
-TRAIN_PATH = '/mnt/c/Users/14135/Desktop/birdnet/cub200data/CUB_200_2011/train' #'./../birdnet/cub200data/CUB_200_2011/train/' 
-TEST_PATH = '/mnt/c/Users/14135/Desktop/birdnet/cub200data/CUB_200_2011/test' #'./../birdnet/cub200data/CUB_200_2011/test/'
+TRAIN_PATH = '/home/ubuntu/birdnet/cub200data/CUB_200_2011/train' #'./../birdnet/cub200data/CUB_200_2011/train/' 
+TEST_PATH = '/home/ubuntu/birdnet/cub200data/CUB_200_2011/test' #'./../birdnet/cub200data/CUB_200_2011/test/'
 
 TEST_SIZE = 2024
 
