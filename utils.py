@@ -4,7 +4,6 @@ import os
 import datetime
 import numpy as np
 import torch
-from hp_search import train_cub
 
 def make_runname(prefix = None):
     # create a runname from date
@@ -15,7 +14,7 @@ def make_runname(prefix = None):
 
 def save_model(runname, model, bucketname = 'bradfordgillbirddatabucket', foldername = 'modellogs'): 
     # save model locally and to cloud
-    filename = f'{runname}.pth'
+    filename = f'{runname}.pt'
     if not os.path.exists(foldername):
         os.mkdir(foldername)
 
@@ -26,13 +25,15 @@ def save_model(runname, model, bucketname = 'bradfordgillbirddatabucket', folder
             aws_secret_access_key=SECRET_KEY)
     s3 = session.resource('s3')
 
-    torch.save(model.state_dict(), path)
+    model.to('cpu')
+
+    torch.save(model, path)
     result = s3.Bucket(bucketname).upload_file(path, path)
 
 def load_model(runname, bucketname = 'bradfordgillbirddatabucket', foldername = 'modellogs'): 
     # load model from local or cloud 
 
-    filename = f'{runname}.pth'
+    filename = f'{runname}.pt'
     path = f'{foldername}/{filename}'
 
     if not os.path.exists(path):
@@ -42,10 +43,11 @@ def load_model(runname, bucketname = 'bradfordgillbirddatabucket', foldername = 
                 aws_access_key_id=KEY_ID,
                 aws_secret_access_key=SECRET_KEY)
         s3 = session.resource('s3')
-
         results = s3.Bucket(bucketname).download_file(path, path)
 
-    return torch.load(path)
+    device = torch.device("cpu")
+
+    return torch.load(path, map_location=torch.device(device))
 
 def save_analysis(name, analysis, bucketname = 'bradfordgillbirddatabucket', foldername = 'analysislogs'):
     filename = f'{name}.npy'

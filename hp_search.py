@@ -11,7 +11,7 @@ FOLDER_NAME = 'mobilenetv3_hpsearch'
 NUM_CLASSES = 200
 
 EPOCHS = 12
-NUM_SAMPLES = 32
+NUM_SAMPLES = 10
 
 TRAIN_PATH = '/home/ubuntu/birdnet/cub200data/CUB_200_2011/train' #'./../birdnet/cub200data/CUB_200_2011/train/' 
 TEST_PATH = '/home/ubuntu/birdnet/cub200data/CUB_200_2011/test' #'./../birdnet/cub200data/CUB_200_2011/test/'
@@ -19,7 +19,6 @@ TEST_PATH = '/home/ubuntu/birdnet/cub200data/CUB_200_2011/test' #'./../birdnet/c
 TEST_SIZE = 2024
 
 TRIAL_NAME = "init"
-
 
 def train_epoch(model, opt, train_loader):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -85,12 +84,12 @@ def train_cub(config):
     train_data = torchvision.datasets.ImageFolder(root = TRAIN_PATH, transform = train_transforms)
     test_data = torchvision.datasets.ImageFolder(root = TEST_PATH, transform = test_transforms)
 
-    train_loader = DataLoader(train_data, batch_size=64, shuffle=True)
-    test_loader = DataLoader(test_data, batch_size=64, shuffle=True)
+    train_loader = DataLoader(train_data, batch_size = 128, shuffle = True)
+    test_loader = DataLoader(test_data, batch_size = 128, shuffle = True)
 
     # define model
-    model = model = timm.create_model('mobilenetv3_large_100', pretrained = True, num_classes = NUM_CLASSES)
-
+    model_base = timm.create_model('mobilenetv3_large_100', pretrained = True, num_classes = NUM_CLASSES)
+    model = utils.load_model('0.72998_220211190216', model_base, foldername = 'mobilenetv3_hpsearch')
     # define opt 
     opt = torch.optim.SGD(model.parameters(), 
                     lr = config["lr"], 
@@ -110,9 +109,9 @@ def train_cub(config):
 
 if __name__ == "__main__":
     search_space = {
-        'lr': tune.loguniform(1e-6, .1),
-        'momentum': tune.choice([.6, .9, .99]),
-        'l2': tune.loguniform(1e-6, 1e-3)}
+        'lr': tune.loguniform(1e-3, .1),
+        'momentum': tune.choice([.9]),
+        'l2': tune.loguniform(1e-4, 1e-2)}
 
     analysis = tune.run(
         train_cub,
