@@ -98,7 +98,7 @@ def train_cub(epochs):
 
     # define opt 
     opt = torch.optim.SGD(model.parameters(), 
-                    lr = 1e-5
+                    lr = 1e-5,
                     momentum = .9,
                     weight_decay = .003
                     )
