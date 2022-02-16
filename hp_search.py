@@ -65,19 +65,22 @@ def test_epoch(model, data_loader):
 
 def train_cub(config):
     # transforms 
-    base_transforms = [
-    transforms.Resize(224),
-    transforms.CenterCrop(224),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0, 0, 0], std=[0.225, 0.225, 0.225])
-    ]
 
-    train_transforms = transforms.Compose([*base_transforms,
+    train_transforms = transforms.Compose([
+                        transforms.RandomResizedCrop(224, scale = (0.8, 1.2)),
+                        transforms.ToTensor(),
+                        transforms.RandomPerspective(distortion_scale = 0.4, p = 1.0),
+                        transforms.Normalize(mean=[0, 0, 0], std=[0.225, 0.225, 0.225]),
                         transforms.RandomRotation(degrees=(0, 20)),
-                        transforms.RandomHorizontalFlip(p=0.5),
+                        transforms.RandomHorizontalFlip(p=0.5)
                         ])
 
-    test_transforms = transforms.Compose([*base_transforms])
+    test_transforms = transforms.Compose([
+                        transforms.Resize(224),
+                        transforms.CenterCrop(224),
+                        transforms.ToTensor(),
+                        transforms.Normalize(mean=[0, 0, 0], std=[0.225, 0.225, 0.225])
+                        ])
 
     train_data = torchvision.datasets.ImageFolder(root = TRAIN_PATH, transform = train_transforms)
     test_data = torchvision.datasets.ImageFolder(root = TEST_PATH, transform = test_transforms)
@@ -118,7 +121,7 @@ if __name__ == "__main__":
         mode="max", 
         brackets = 2,
         reduction_factor = 2)
-        
+
     analysis = tune.run(
         train_cub,
         num_samples = NUM_SAMPLES,
