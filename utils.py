@@ -4,6 +4,7 @@ import os
 import datetime
 import numpy as np
 import torch
+from hp_search import train_cub
 
 def make_runname(prefix = None):
     # create a runname from date
@@ -53,7 +54,7 @@ def save_analysis(name, analysis, bucketname = 'bradfordgillbirddatabucket', fol
 
     path = os.path.join(foldername, filename)
 
-    np.save(path, analysis, allow_pickle = True)
+    np.save(path, analysis.trial_dataframes, allow_pickle = True)
 
     session = boto3.Session(
             aws_access_key_id=KEY_ID,
@@ -62,7 +63,7 @@ def save_analysis(name, analysis, bucketname = 'bradfordgillbirddatabucket', fol
     s3 = session.resource('s3')
     result = s3.Bucket(bucketname).upload_file(path, path)
 
-def load_analysis(name, bucketname = 'bradfordgillbirddatabucket', foldername = 'analysislogs'):
+def load_analysis(name, bucketname = 'bradfordgillbirddatabucket', foldername = 'mobilenetv3_hpsearch'):
     filename = f'{name}.npy'
     path = os.path.join(foldername, filename)
 
