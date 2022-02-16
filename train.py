@@ -41,6 +41,8 @@ def train_epoch(model, opt, train_loader):
         total += target.size(0)
         correct += (predicted == target).sum().item()
 
+    return correct / total
+
 def test_epoch(model, data_loader):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     model.eval()
@@ -103,11 +105,16 @@ def train_cub(epochs):
                     weight_decay = .003
                     )
 
+    scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(opt, 'max', patience = 6)
+
     t = trange(epochs, leave=True)
 
     for epoch in t:
         train_acc = train_epoch(model, opt, train_loader)
         val_acc = test_epoch(model, test_loader)
+
+        scheduler.step(val_acc)
+
         t.set_description(f"Val Acc: {val_acc:.5f}, Train Acc: {train_acc:.5f}")
 
     runname = utils.make_runname(prefix = f'{val_acc:.5f}')
