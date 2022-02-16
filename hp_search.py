@@ -64,7 +64,7 @@ def test_epoch(model, data_loader):
     return correct / total
 
 def train_cub(config):
-    # base transforms 
+    # transforms 
     base_transforms = [
     transforms.Resize(224),
     transforms.CenterCrop(224),
@@ -72,7 +72,6 @@ def train_cub(config):
     transforms.Normalize(mean=[0, 0, 0], std=[0.225, 0.225, 0.225])
     ]
 
-    # train transforms 
     train_transforms = transforms.Compose([*base_transforms,
                         transforms.RandomRotation(degrees=(0, 20)),
                         transforms.RandomHorizontalFlip(p=0.5),
@@ -80,7 +79,6 @@ def train_cub(config):
 
     test_transforms = transforms.Compose([*base_transforms])
 
-    # test transforsm 
     train_data = torchvision.datasets.ImageFolder(root = TRAIN_PATH, transform = train_transforms)
     test_data = torchvision.datasets.ImageFolder(root = TEST_PATH, transform = test_transforms)
 
@@ -88,8 +86,8 @@ def train_cub(config):
     test_loader = DataLoader(test_data, batch_size = 128, shuffle = True)
 
     # define model
-    model_base = timm.create_model('mobilenetv3_large_100', pretrained = True, num_classes = NUM_CLASSES)
-    model = utils.load_model('0.72998_220211190216', model_base, foldername = 'mobilenetv3_hpsearch')
+    model = timm.create_model('mobilenetv3_large_100', pretrained = True, num_classes = NUM_CLASSES)
+
     # define opt 
     opt = torch.optim.SGD(model.parameters(), 
                     lr = config["lr"], 
@@ -118,7 +116,7 @@ if __name__ == "__main__":
         num_samples = NUM_SAMPLES,
         scheduler = tune.schedulers.ASHAScheduler(metric="mean_accuracy", mode="max"),
         config = search_space, 
-        verbose = 1,
+        verbose = 3,
         resources_per_trial={"gpu": 1})
 
     utils.save_analysis('analysisinit', analysis, foldername = FOLDER_NAME)
