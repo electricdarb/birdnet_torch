@@ -56,7 +56,9 @@ def save_analysis(name, analysis, bucketname = 'bradfordgillbirddatabucket', fol
 
     path = os.path.join(foldername, filename)
 
-    np.save(path, analysis.trial_dataframes, allow_pickle = True)
+    df = analysis.dataframe()
+
+    np.save(path, df, allow_pickle = True)
 
     session = boto3.Session(
             aws_access_key_id=KEY_ID,

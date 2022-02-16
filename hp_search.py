@@ -86,7 +86,9 @@ def train_cub(config):
     test_loader = DataLoader(test_data, batch_size = 128, shuffle = True)
 
     # define model
-    model = timm.create_model('mobilenetv3_large_100', pretrained = True, num_classes = NUM_CLASSES)
+    
+    #model = timm.create_model('mobilenetv3_large_100', pretrained = True, num_classes = NUM_CLASSES)
+    model = utils.load_model('0.73096_220216172023', foldername= 'mobilenetv3_hpsearch')
 
     # define opt 
     opt = torch.optim.SGD(model.parameters(), 
@@ -107,7 +109,7 @@ def train_cub(config):
 
 if __name__ == "__main__":
     search_space = {
-        'lr': tune.loguniform(1e-3, .1),
+        'lr': tune.loguniform(1e-5, 1e-2),
         'momentum': tune.choice([.9]),
         'l2': tune.loguniform(1e-4, 1e-2)}
 
@@ -119,4 +121,4 @@ if __name__ == "__main__":
         verbose = 3,
         resources_per_trial={"gpu": 1})
 
-    utils.save_analysis('analysisinit', analysis, foldername = FOLDER_NAME)
+    utils.save_analysis('analysis_round2', analysis, foldername = FOLDER_NAME)
