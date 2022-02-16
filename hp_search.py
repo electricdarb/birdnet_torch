@@ -10,8 +10,8 @@ from torch.utils.data import DataLoader
 FOLDER_NAME = 'mobilenetv3_hpsearch'
 NUM_CLASSES = 200
 
-EPOCHS = 12
-NUM_SAMPLES = 10
+EPOCHS = 4
+NUM_SAMPLES = 8
 
 TRAIN_PATH = '/home/ubuntu/birdnet/cub200data/CUB_200_2011/train' #'./../birdnet/cub200data/CUB_200_2011/train/' 
 TEST_PATH = '/home/ubuntu/birdnet/cub200data/CUB_200_2011/test' #'./../birdnet/cub200data/CUB_200_2011/test/'
@@ -88,7 +88,7 @@ def train_cub(config):
     # define model
     
     #model = timm.create_model('mobilenetv3_large_100', pretrained = True, num_classes = NUM_CLASSES)
-    model = utils.load_model('0.73096_220216172023', foldername= 'mobilenetv3_hpsearch')
+    model = utils.load_model('0.74561_220216183458', foldername= 'mobilenetv3_hpsearch')
 
     # define opt 
     opt = torch.optim.SGD(model.parameters(), 
@@ -109,16 +109,22 @@ def train_cub(config):
 
 if __name__ == "__main__":
     search_space = {
-        'lr': tune.loguniform(1e-5, 1e-2),
+        'lr': tune.loguniform(1e-5, 1e-3),
         'momentum': tune.choice([.9]),
         'l2': tune.loguniform(1e-4, 1e-2)}
-
+    
+    tuner = tune.schedulers.ASHAScheduler(
+        metric="mean_accuracy", 
+        mode="max", 
+        brackets = 2,
+        reduction_factor = 2)
+        
     analysis = tune.run(
         train_cub,
         num_samples = NUM_SAMPLES,
-        scheduler = tune.schedulers.ASHAScheduler(metric="mean_accuracy", mode="max"),
+        scheduler = tuner,
         config = search_space, 
         verbose = 3,
         resources_per_trial={"gpu": 1})
 
-    utils.save_analysis('analysis_round2', analysis, foldername = FOLDER_NAME)
+    utils.save_analysis('analysis_round3', analysis, foldername = FOLDER_NAME)
