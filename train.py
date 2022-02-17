@@ -74,7 +74,7 @@ def train_cub(epochs):
     train_transforms = transforms.Compose([
                         transforms.RandomResizedCrop(224, scale = (0.8, 1.2)),
                         transforms.ToTensor(),
-                        transforms.RandomPerspective(distortion_scale = 0.4, p = 1.0),
+                        transforms.RandomPerspective(distortion_scale = 0.05, p = 1.0),
                         transforms.Normalize(mean=[0, 0, 0], std=[0.225, 0.225, 0.225]),
                         transforms.RandomRotation(degrees=(0, 20)),
                         transforms.RandomHorizontalFlip(p=0.5)

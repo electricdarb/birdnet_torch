@@ -65,11 +65,10 @@ def test_epoch(model, data_loader):
 
 def train_cub(config):
     # transforms 
-
     train_transforms = transforms.Compose([
                         transforms.RandomResizedCrop(224, scale = (0.8, 1.2)),
                         transforms.ToTensor(),
-                        transforms.RandomPerspective(distortion_scale = 0.4, p = 1.0),
+                        transforms.RandomPerspective(distortion_scale = 0.2, p = 1.0),
                         transforms.Normalize(mean=[0, 0, 0], std=[0.225, 0.225, 0.225]),
                         transforms.RandomRotation(degrees=(0, 20)),
                         transforms.RandomHorizontalFlip(p=0.5)
@@ -112,9 +111,9 @@ def train_cub(config):
 
 if __name__ == "__main__":
     search_space = {
-        'lr': tune.loguniform(1e-5, 1e-3),
-        'momentum': tune.choice([.9]),
-        'l2': tune.loguniform(1e-4, 1e-2)}
+        'lr': tune.loguniform(1e-6, 1e-3),
+        'momentum': tune.choice([.6, .9]),
+        'l2': tune.loguniform(1e-6, 1e-2)}
     
     tuner = tune.schedulers.ASHAScheduler(
         metric="mean_accuracy", 
