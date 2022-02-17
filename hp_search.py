@@ -10,8 +10,8 @@ from torch.utils.data import DataLoader
 FOLDER_NAME = 'mobilenetv3_hpsearch'
 NUM_CLASSES = 200
 
-EPOCHS = 4
-NUM_SAMPLES = 8
+EPOCHS = 8
+NUM_SAMPLES = 12
 
 TRAIN_PATH = '/home/ubuntu/birdnet/cub200data/CUB_200_2011/train' #'./../birdnet/cub200data/CUB_200_2011/train/' 
 TEST_PATH = '/home/ubuntu/birdnet/cub200data/CUB_200_2011/test' #'./../birdnet/cub200data/CUB_200_2011/test/'
