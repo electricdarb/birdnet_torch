@@ -9,6 +9,6 @@
 !requirements.txt
 !neuralstick.ipynb
 !train.py
-!nsc2_test.py
+!ncs2_test.py
 !/models
 !/models/*
