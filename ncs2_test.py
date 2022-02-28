@@ -1,7 +1,7 @@
 from openvino.inference_engine import IECore
 import numpy as np
 
-model_path = "./models/yolov5"
+model_path = "./models/yolov5n"
 
 ie = IECore()
 device = 'MYRIAD'
