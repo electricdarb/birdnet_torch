@@ -15,7 +15,7 @@ print('Setting up network for NCS2')
 
 ie = IECore()
 
-device = 'CPU'#'MYRIAD'
+device = 'MYRIAD'
 model_name = 'yolov5n'
 
 net = ie.read_network(model = f'models/{model_name}.xml', weights = f'models/{model_name}.bin')
