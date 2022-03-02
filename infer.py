@@ -182,7 +182,7 @@ class ObjectDetector():
 
         ie = IECore()
 
-        net = ie.read_network(model = f'models/{model_name}.xml', weights = f'models/{model_name}.bin')
+        net = ie.read_network(model = f'/home/pi/birdnet_torch/models/{model_name}.xml', weights = f'/home/pi/birdnet_torch/models/{model_name}.bin')
         self.net = ie.load_network(network = net, device_name = device, num_requests=2)
 
         self.conf_threshold = conf_threshold
