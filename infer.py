@@ -76,6 +76,7 @@ def non_max_surpression(objects, threshold = .5):
      - this could get some easy gains through vectorization
     """
     l = len(objects)
+
     for i in range(l): 
         # if confidence is too low, skip this iteration
         if objects[i][4] <= 0.0: continue
@@ -87,6 +88,7 @@ def non_max_surpression(objects, threshold = .5):
                     objects[j][4] = 0.
                 else: 
                     objects[i][4] = 0.
+
     # return objects that dont have confidence 0
     return objects[(objects[..., 4] > 0.)] 
 
@@ -160,12 +162,47 @@ def draw_boxes(img, objects):
         xmin, ymin, xmax, ymax = int(obj[0] * width), int(obj[1] * height), int(obj[2] * width), int(obj[3] * height)
 
         cv2.rectangle(result, (xmin, ymin), (xmax, ymax), color, 1)
-        cv2.putText(result, f"class: {int(obj[5])} @ {obj[4]:.1%}",
+        cv2.putText(result, f"{int(obj[5])} @ {obj[4]:.1%}",
             (xmin, ymin),
             cv2.FONT_HERSHEY_SIMPLEX,
             .5, color, 1, 2)
 
     return result
+
+class ObjectDetector():
+    def __init__(self, 
+            model_name, 
+            device = 'MYRIAD',
+            conf_threshold = .5, 
+            iou_threshold = .5,
+            num_classes = 80,
+            anchors = YOLOV5N_ANCHORS,
+            img_size = 640
+            ):
+
+        ie = IECore()
+
+        net = ie.read_network(model = f'models/{model_name}.xml', weights = f'models/{model_name}.bin')
+        self.net = ie.load_network(network = net, device_name = device, num_requests=2)
+
+        self.conf_threshold = conf_threshold
+        self.iou_threshold = iou_threshold
+
+        self.detector = create_detector(num_classes = num_classes, anchors = anchors, img_size = img_size)
+    
+    def __call__(self, img):
+        inputs = prep_cv2_img(img)
+
+        outputs = self.net.infer(inputs=inputs)
+        outputs = [out for _, out in outputs.items()]
+
+        preds = self.detector(outputs)
+
+        objects = parse_predictions(preds, threshold = self.conf_threshold)
+        objects = non_max_surpression(objects, threshold = self.iou_threshold)
+
+        img_out = draw_boxes(img, objects)
+        return img_out
 
 if __name__ == "__main__":
     iou_threshold = .5
