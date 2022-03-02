@@ -170,6 +170,15 @@ def draw_boxes(img, objects):
     return result
 
 class ObjectDetector():
+    """
+    A nice abstraction of the object detector
+    
+    inputs a cv2 image (bgr)
+    outputs a cv2 image, same size as input (bgr)
+
+    design thoughts:
+    i guess this could be a function returning a function rather than a clas
+    """
     def __init__(self, 
             model_name, 
             device = 'MYRIAD',
