@@ -189,10 +189,10 @@ class ObjectDetector():
             img_size = 640
             ):
 
-        ie = IECore()
+        self.ie = IECore()
 
-        net = ie.read_network(model = f'/home/pi/birdnet_torch/models/{model_name}.xml', weights = f'/home/pi/birdnet_torch/models/{model_name}.bin')
-        self.net = ie.load_network(network = net, device_name = device, num_requests=2)
+        net = self.ie.read_network(model = f'/home/pi/birdnet_torch/models/{model_name}.xml', weights = f'/home/pi/birdnet_torch/models/{model_name}.bin')
+        self.net = self.ie.load_network(network = net, device_name = device, num_requests=2)
 
         self.conf_threshold = conf_threshold
         self.iou_threshold = iou_threshold
