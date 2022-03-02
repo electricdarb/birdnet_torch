@@ -30,7 +30,7 @@ class ObjectDetector(): # for some reason this needs to be in here
 
         self.ie = IECore()
 
-        net = self.ie.read_network(model = f'~/birdnet_torch/models/{model_name}.xml', weights = f'~/birdnet_torch/models/{model_name}.bin')
+        net = self.ie.read_network(model = f'/home/pi/birdnet_torch/models/{model_name}.xml', weights = f'/home/pi/birdnet_torch/models/{model_name}.bin')
         self.net = self.ie.load_network(network = net, device_name = device, num_requests=2)
 
         self.conf_threshold = conf_threshold
