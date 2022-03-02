@@ -175,7 +175,7 @@ if __name__ == "__main__":
     ie = IECore()
     device = 'CPU'#'MYRIAD'
 
-    net = ie.read_network(model = f'models\\{model_name}.xml', weights = f'models\\{model_name}.bin')
+    net = ie.read_network(model = f'models/{model_name}.xml', weights = f'models/{model_name}.bin')
     exec_net = ie.load_network(network = net, device_name = device, num_requests=2)
 
     detector = create_detector()  
@@ -195,7 +195,7 @@ if __name__ == "__main__":
         objects = non_max_surpression(objects, threshold = iou_threshold)
         
         img_out = draw_boxes(img, objects)
-        
+
         cv2.imshow('my webcam', img_out)
 
         if cv2.waitKey(1) == 27: 
