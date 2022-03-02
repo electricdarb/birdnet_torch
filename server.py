@@ -1,5 +1,5 @@
 import cv2
-from infer import prep_cv2_img, parse_predictions, create_detector, draw_boxes, non_max_surpression
+from infer import prep_cv2_img, parse_predictions, create_detector, draw_boxes, non_max_surpression, YOLOV5N_ANCHORS
 
 from flask import Flask, render_template, Response
 

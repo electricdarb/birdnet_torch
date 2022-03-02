@@ -1,7 +1,6 @@
 # ignore all files/sub folders by defualt
 *
 */
-
 # define what not to ignore
 !.gitignore
 !utils.py
@@ -9,11 +8,9 @@
 !requirements.txt
 !neuralstick.ipynb
 !train.py
-!ncs2_test.py
 !infer.py
 !server.py
 !/models
 !/models/*
-!/webcamtest.py
 !/templates
 !/templates/*
