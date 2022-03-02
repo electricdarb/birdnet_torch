@@ -3,7 +3,10 @@ from infer import ObjectDetector
 
 from flask import Flask, render_template, Response
 
-object_detector = ObjectDetector('yolov5n')
+device = 'MYRIAD'
+model_name = 'yolov5n'
+
+object_detector = ObjectDetector(model_name, device)
 camera = cv2.VideoCapture(0)
 
 LOGGER = print
