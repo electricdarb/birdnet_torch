@@ -9,6 +9,17 @@ from openvino.inference_engine import IECore
 
 lock = Lock()
 
+print('Setting up network for NCS2')
+
+ie = IECore()
+
+device = 'MYRIAD'
+model_name = 'yolov5n'
+
+net = ie.read_network(model = f'models/{model_name}.xml', weights = f'models/{model_name}.bin')
+exec_net = ie.load_network(network = net, device_name = device, num_requests=2)
+
+
 class ObjectDetector(): # for some reason this needs to be in here
     """
     A nice abstraction of the object detector
@@ -29,11 +40,6 @@ class ObjectDetector(): # for some reason this needs to be in here
             img_size = 640
             ):
 
-        self.ie = IECore()
-
-        self.net = self.ie.read_network(model = f'./models/{model_name}.xml', weights = f'./models/{model_name}.bin')
-        self.exec_net = self.ie.load_network(network = self.net, device_name = device, num_requests=2)
-
         self.conf_threshold = conf_threshold
         self.iou_threshold = iou_threshold
 
@@ -42,13 +48,7 @@ class ObjectDetector(): # for some reason this needs to be in here
     def __call__(self, img):
         inputs = prep_cv2_img(img)
         with lock: # prevent multiple calls from happening at once
-            while True:
-                try:
-                    outputs = self.exec_net.infer(inputs=inputs)
-                    break
-                except:
-                    print("ERROR ON MYRAID")
-
+            outputs = exec_net.infer(inputs=inputs)
 
         outputs = [out for _, out in outputs.items()]
 
@@ -61,8 +61,6 @@ class ObjectDetector(): # for some reason this needs to be in here
         return img_out
 
 
-device = 'MYRIAD'
-model_name = 'yolov5n'
 
 object_detector = ObjectDetector(model_name, device)
 camera = cv2.VideoCapture(0)
