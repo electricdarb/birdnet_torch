@@ -1,4 +1,5 @@
 import cv2
+from cv2 import exp
 from infer import prep_cv2_img, parse_predictions, create_detector, draw_boxes, non_max_surpression, YOLOV5N_ANCHORS
 
 from flask import Flask, render_template, Response
@@ -41,7 +42,13 @@ class ObjectDetector(): # for some reason this needs to be in here
     def __call__(self, img):
         inputs = prep_cv2_img(img)
         with lock: # prevent multiple calls from happening at once
-            outputs = self.net.infer(inputs=inputs)
+            while True:
+                try:
+                    outputs = self.net.infer(inputs=inputs)
+                    break
+                except:
+                    print("ERROR ON MYRAID")
+
 
         outputs = [out for _, out in outputs.items()]
 
