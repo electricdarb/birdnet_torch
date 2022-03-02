@@ -31,8 +31,8 @@ class ObjectDetector(): # for some reason this needs to be in here
 
         self.ie = IECore()
 
-        net = self.ie.read_network(model = f'/home/pi/birdnet_torch/models/{model_name}.xml', weights = f'/home/pi/birdnet_torch/models/{model_name}.bin')
-        self.net = self.ie.load_network(network = net, device_name = device, num_requests=2)
+        self.net = self.ie.read_network(model = f'./models/{model_name}.xml', weights = f'./models/{model_name}.bin')
+        self.exec_net = self.ie.load_network(network = self.net, device_name = device, num_requests=2)
 
         self.conf_threshold = conf_threshold
         self.iou_threshold = iou_threshold
@@ -44,7 +44,7 @@ class ObjectDetector(): # for some reason this needs to be in here
         with lock: # prevent multiple calls from happening at once
             while True:
                 try:
-                    outputs = self.net.infer(inputs=inputs)
+                    outputs = self.exec_net.infer(inputs=inputs)
                     break
                 except:
                     print("ERROR ON MYRAID")
