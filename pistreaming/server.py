@@ -148,7 +148,7 @@ class BroadcastOutput(object):
             out = self.object_detector(img)
             is_success, buffer = cv2.imencode(".jpg", out)
             b = buffer.tobytes()
-        self.converter.stdin.write(b)
+            self.converter.stdin.write(b)
 
     def flush(self):
         print('Waiting for background conversion process to exit')
