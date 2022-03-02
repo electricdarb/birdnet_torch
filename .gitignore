@@ -11,8 +11,9 @@
 !train.py
 !ncs2_test.py
 !infer.py
-!/pistreaming
-!/pistreaming/*
+!server.py
 !/models
 !/models/*
 !/webcamtest.py
+!/templates
+!/templates/*
