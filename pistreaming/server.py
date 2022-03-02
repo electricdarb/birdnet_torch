@@ -147,7 +147,7 @@ class BroadcastOutput(object):
             img = get_opencv_img_from_buffer(b, cv2.IMREAD_COLOR)
             out = self.object_detector(img)
             is_success, buffer = cv2.imencode(".jpg", out)
-            b = io.BytesIO(buffer)
+            b = buffer.tobytes()
         self.converter.stdin.write(b)
 
     def flush(self):
