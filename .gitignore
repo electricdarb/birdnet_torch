@@ -10,6 +10,7 @@
 !neuralstick.ipynb
 !train.py
 !ncs2_test.py
+!infer.py
 !/models
 !/models/*
 !/webcamtest.py
