@@ -7,13 +7,15 @@ from threading import Lock
 
 from openvino.inference_engine import IECore
 
+app = Flask(__name__)
+
 lock = Lock()
 
 print('Setting up network for NCS2')
 
 ie = IECore()
 
-device = 'MYRIAD'
+device = 'CPU'#'MYRIAD'
 model_name = 'yolov5n'
 
 net = ie.read_network(model = f'models/{model_name}.xml', weights = f'models/{model_name}.bin')
@@ -79,7 +81,7 @@ def gen_frames():
         yield (b'--frame\r\n'
                 b'Content-Type: image/jpeg\r\n\r\n' + out + b'\r\n')
 
-app = Flask(__name__)
+
 @app.route('/')
 def index():
     return render_template('index.html')
