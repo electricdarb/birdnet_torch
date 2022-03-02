@@ -73,7 +73,7 @@ HFLIP = False
 
 ###########################################
 def get_opencv_img_from_buffer(buffer, flags):
-    bytes_as_np_array = np.frombuffer(buffer.read(), dtype=np.uint8)
+    bytes_as_np_array = np.frombuffer(buffer, dtype=np.uint8)
     return cv2.imdecode(bytes_as_np_array, flags)
 
 class StreamingHttpHandler(BaseHTTPRequestHandler):
