@@ -1,16 +1,3 @@
-"""
- Copyright (C) 2018-2019 Intel Corporation
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-      http://www.apache.org/licenses/LICENSE-2.0
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
-"""
-
 import numpy as np
 import cv2
 from openvino.inference_engine import IECore
@@ -177,7 +164,7 @@ class ObjectDetector():
     outputs a cv2 image, same size as input (bgr)
 
     design thoughts:
-    i guess this could be a function returning a function rather than a clas
+    i guess this could be a function returning a function rather than a class
     """
     def __init__(self, 
             model_name, 
@@ -190,7 +177,7 @@ class ObjectDetector():
             ):
 
         self.ie = IECore()
-
+        
         net = self.ie.read_network(model = f'/home/pi/birdnet_torch/models/{model_name}.xml', weights = f'/home/pi/birdnet_torch/models/{model_name}.bin')
         self.net = self.ie.load_network(network = net, device_name = device, num_requests=2)
 
