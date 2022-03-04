@@ -190,6 +190,8 @@ class ObjectDetector():
         self.iou_threshold = iou_threshold
 
         self.detector = create_detector(num_classes = num_classes, anchors = anchors, img_size = img_size)
+
+        self.num_classes = num_classes
     
     def __call__(self, img):
         inputs = prep_cv2_img(img)
@@ -202,7 +204,7 @@ class ObjectDetector():
         objects = parse_predictions(preds, threshold = self.conf_threshold)
         objects = non_max_surpression(objects, threshold = self.iou_threshold)
 
-        img_out = draw_boxes(img, objects, num_classes)
+        img_out = draw_boxes(img, objects, self.num_classes)
         return img_out
 
 if __name__ == "__main__":
