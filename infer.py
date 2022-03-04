@@ -169,7 +169,7 @@ class ObjectDetector():
     def __init__(self, 
             model_name, 
             device = 'MYRIAD',
-            conf_threshold = .5, 
+            conf_threshold = .2, 
             iou_threshold = .5,
             num_classes = 80,
             anchors = YOLOV5N_ANCHORS,
@@ -233,5 +233,6 @@ if __name__ == "__main__":
 
         if cv2.waitKey(1) == 27: 
             break  # esc to quit
+        
     cv2.destroyAllWindows()
     
