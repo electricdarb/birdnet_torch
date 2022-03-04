@@ -2,6 +2,7 @@ import numpy as np
 import cv2
 from openvino.inference_engine import IECore
 from colorhash import ColorHash
+from math import sin
 
 YOLOV5N_ANCHORS = [
     [10,13, 16,30, 33,23],  # P3/8
@@ -135,7 +136,7 @@ def prep_cv2_img(img_in, size = 640):
     img = np.expand_dims(img, axis = 0) # expand dims for batch size of 1
     return {'images': img} 
 
-def draw_boxes(img, objects):
+def draw_boxes(img, objects, num_classes = 80):
     """
     img: cv2/numpy in rgb order
     objects: numpy of shape (n, 6) where:
@@ -145,9 +146,12 @@ def draw_boxes(img, objects):
     height, width = img.shape[:2]
     result = img.copy()
 
+    factor = 3.14 / num_classes / 2
+
     for obj in objects:
-        color = ColorHash(obj[5]).rgb # create a color for each class
         
+        color = sin(obj[5] * factor), sin(obj[5] * factor * 2), sin(obj[5] * factor * 4)
+
         xmin, ymin, xmax, ymax = int(obj[0] * width), int(obj[1] * height), int(obj[2] * width), int(obj[3] * height)
 
         cv2.rectangle(result, (xmin, ymin), (xmax, ymax), color, 1)
@@ -199,7 +203,7 @@ class ObjectDetector():
         objects = parse_predictions(preds, threshold = self.conf_threshold)
         objects = non_max_surpression(objects, threshold = self.iou_threshold)
 
-        img_out = draw_boxes(img, objects)
+        img_out = draw_boxes(img, objects, num_classes)
         return img_out
 
 if __name__ == "__main__":
