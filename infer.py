@@ -149,8 +149,7 @@ def draw_boxes(img, objects, num_classes = 80):
     factor = 3.14 / num_classes / 2
 
     for obj in objects:
-        
-        color = sin(obj[5] * factor), sin(obj[5] * factor * 2), sin(obj[5] * factor * 4)
+        color = (int(sin(obj[5] * factor) * 256 * i * 2) for i in range(3))
 
         xmin, ymin, xmax, ymax = int(obj[0] * width), int(obj[1] * height), int(obj[2] * width), int(obj[3] * height)
 
